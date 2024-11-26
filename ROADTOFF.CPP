@@ -18,7 +18,7 @@ void tampilkanMenu() {
     cout << "| 4. Lihat Riwayat Parkir                |\n";
     cout << "| 5. Lihat Antrean                       |\n";
     cout << "| 6. Laporan Pendapatan                  |\n";
-    cout << "| 0. Keluar                              |\n";
+    cout << "| 0. Keluar   WAHYUDI                           |\n";
     garisHorizontal(40);
     cout << "Pilihan: ";
 }
