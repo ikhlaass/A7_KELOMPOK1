@@ -36,13 +36,6 @@ void garisHorizontal(int panjang) {
 }
 
 
-// Fungsi untuk menampilkan menu
-void tampilkanMenu() {
-    cout << "| 4. Lihat Riwayat Parkir                |\n";
-    cout << "| 0. Keluar                              |\n";
-    cout << "Pilihan: ";
-}
-
 // Fungsi untuk melihat riwayat parkir
 void lihatRiwayatParkir() {
     garisHorizontal(41);
@@ -66,23 +59,10 @@ void lihatRiwayatParkir() {
 
 
 int main() {
-    int pilihan;
-
-    do {
-        system("cls");
-        tampilkanMenu();
-        cin >> pilihan;
-        cin.ignore();
-        system("cls");
-
-        switch (pilihan) {
-            
-            case 4:
+    
                 lihatRiwayatParkir();
                 system("pause");
                 system("cls");
-                break;
-            }
-    } while (pilihan != 0);
-	return 0;
+
+
 }
