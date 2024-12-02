@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <ctime> 
 using namespace std;
 
 const int MAX_SLOT = 1; 
@@ -31,6 +33,19 @@ void garisHorizontal(int panjang) {
     cout << endl;
 }
 
+void simpanKeFile(string platNomor, string waktu) {
+    ofstream file("data_parkir.txt"); 
+    if (file.is_open()) {
+        file << "Plat Nomor : " << platNomor << endl;
+        file << "Waktu      : " << waktu << endl;
+        file << "----------------------------------------\n";
+        file.close();
+        cout << "Data berhasil disimpan ke file data_parkir.txt\n";
+    } else {
+        cout << "Gagal membuka file untuk menyimpan data.\n";
+    }
+}
+
 void masukkanMobil() {
     if (jumlahSlotTerisi < MAX_SLOT) {
         string platNomor;
@@ -44,14 +59,15 @@ void masukkanMobil() {
         waktuParkir[jumlahSlotTerisi] = getWaktuSekarang();
         jumlahSlotTerisi++;
 
+        simpanKeFile(platNomor, waktuParkir[jumlahSlotTerisi - 1]);
+
         cout << "\n\n";
         cout << "++++++++++++++++++++++++++++++++++++++++++\n";
         cout << "+ Mobil Plat    : " << platNomor << "\n";                                                                  
-        cout << "+ Date          : " << getWaktuSekarang() << "\n";
+        cout << "+ Date          : " << waktuParkir[jumlahSlotTerisi - 1] << "\n";
         cout << "++++++++++++++++++++++++++++++++++++++++++\n\n";
 
-        cout << "berhasil diparkir.\n";
-    
+        cout << "Berhasil diparkir.\n";
     } else {
         if (jumlahAntrean < MAX_QUEUE) {
             string platNomor;
@@ -63,10 +79,12 @@ void masukkanMobil() {
             waktuAntrean[rearAntrean] = getWaktuSekarang();
             jumlahAntrean++;
 
+            simpanKeFile(platNomor, waktuAntrean[rearAntrean]);
+
             cout << "\n\n";
             cout << "++++++++++++++++++++++++++++++++++++++++++\n";
             cout << "+ Mobil Plat    : " << platNomor << "\n";                                                                  
-            cout << "+ Date          : " << getWaktuSekarang() << "\n";
+            cout << "+ Date          : " << waktuAntrean[rearAntrean] << "\n";
             cout << "++++++++++++++++++++++++++++++++++++++++++\n\n";
         } else {
             cout << "Parkir penuh dan antrean juga penuh. Tidak dapat menerima mobil lagi.\n";
@@ -76,7 +94,5 @@ void masukkanMobil() {
 
 int main() {
     masukkanMobil();
-    system("read");
-    system("clear");
-               
+    return 0;
 }
