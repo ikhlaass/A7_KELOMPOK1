@@ -33,53 +33,92 @@ void garisHorizontal(int panjang) {
     cout << endl;
 }
 
-void simpanKeFile(string platNomor, string waktu) {
-    ofstream file("data_parkir.txt"); 
+bool slotKosong(int slot) {
+    return slotParkir[slot].empty();
+}
+
+void simpanSlotParkir() {
+    ofstream file("slotParkir.txt");
     if (file.is_open()) {
-        file << "Plat Nomor : " << platNomor << endl;
-        file << "Waktu      : " << waktu << endl;
-        file << "----------------------------------------\n";
+        for (int i = 0; i < MAX_SLOT; i++) {
+            file << slotParkir[i] << "," << waktuParkir[i] << endl;
+        }
         file.close();
-        cout << "Data berhasil disimpan ke file data_parkir.txt\n";
-    } else {
-        cout << "Gagal membuka file untuk menyimpan data.\n";
+    }
+}
+
+void simpanAntrean() {
+    ofstream file("antreanMobil.txt");
+    if (file.is_open()) {
+        for (int i = frontAntrean; i <= rearAntrean; i++) {
+            file << antreanMobil[i] << "," << waktuAntrean[i] << endl;
+        }
+        file.close();
+    }
+}
+
+void bacaSlotParkir() {
+    ifstream file("slotParkir.txt");
+    if (file.is_open()) {
+        string platNomor, waktu;
+        int i = 0;
+        while (getline(file, platNomor, ',') && getline(file, waktu)) {
+            slotParkir[i] = platNomor;
+            waktuParkir[i] = waktu;
+            i++;
+        }
+        file.close();
+    }
+}
+
+
+void bacaAntrean() {
+    ifstream file("antreanMobil.txt");
+    if (file.is_open()) {
+        string platNomor, waktu;
+        while (getline(file, platNomor, ',') && getline(file, waktu)) {
+            antreanMobil[rearAntrean + 1] = platNomor;
+            waktuAntrean[rearAntrean + 1] = waktu;
+            rearAntrean++;
+            jumlahAntrean++;
+        }
+        file.close();
     }
 }
 
 void masukkanMobil() {
-    if (jumlahSlotTerisi < MAX_SLOT) {
-        string platNomor;
-        garisHorizontal(41);
-        cout << "|           MENAMBAHKAN MOBIL           |\n";
-        garisHorizontal(41);
-        cout << "Masukkan plat nomor mobil: ";
-        getline(cin, platNomor);
+    string platNomor;
+    garisHorizontal(41);
+    cout << "|           MENAMBAHKAN MOBIL           |\n";
+    garisHorizontal(41);
+    
+    cout << "Masukkan plat nomor mobil: ";
+    getline(cin, platNomor);
 
-        slotParkir[jumlahSlotTerisi] = platNomor;
-        waktuParkir[jumlahSlotTerisi] = getWaktuSekarang();
-        jumlahSlotTerisi++;
+    cout << "Pilih slot parkir (1-" << MAX_SLOT << "): ";
+    int slot;
+    cin >> slot;
+    cin.ignore(); 
 
-        simpanKeFile(platNomor, waktuParkir[jumlahSlotTerisi - 1]);
+    if (slot < 1 || slot > MAX_SLOT) {
+        cout << "Slot tidak valid. Silakan coba lagi.\n";
+        return;
+    }
 
-        cout << "\n\n";
-        cout << "++++++++++++++++++++++++++++++++++++++++++\n";
-        cout << "+ Mobil Plat    : " << platNomor << "\n";                                                                  
-        cout << "+ Date          : " << waktuParkir[jumlahSlotTerisi - 1] << "\n";
-        cout << "++++++++++++++++++++++++++++++++++++++++++\n\n";
+    slot--; 
 
-        cout << "Berhasil diparkir.\n";
+    if (slotKosong(slot)) {
+        slotParkir[slot] = platNomor;
+        waktuParkir[slot] = getWaktuSekarang();
+
+        cout << "\nMobil dengan plat " << platNomor << " berhasil diparkir di slot " << slot + 1 << ".\n";
+        simpanSlotParkir(); 
     } else {
         if (jumlahAntrean < MAX_QUEUE) {
-            string platNomor;
-            cout << "Parkir penuh. Masukkan plat nomor mobil ke antrean: ";
-            getline(cin, platNomor);
-
             rearAntrean++;
             antreanMobil[rearAntrean] = platNomor;
             waktuAntrean[rearAntrean] = getWaktuSekarang();
             jumlahAntrean++;
-
-            simpanKeFile(platNomor, waktuAntrean[rearAntrean]);
 
             cout << "\n\n";
             cout << "++++++++++++++++++++++++++++++++++++++++++\n";
@@ -93,6 +132,7 @@ void masukkanMobil() {
 }
 
 int main() {
+    system("clear");
     masukkanMobil();
     return 0;
 }

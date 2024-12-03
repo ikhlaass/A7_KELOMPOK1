@@ -1,22 +1,21 @@
 #include <iostream>
+#include <fstream>
+
 using namespace std;
 
-const int MAX_SLOT = 1; // Kapasitas maksimum slot parkir
-const int MAX_QUEUE = 1; // Kapasitas maksimum antrean
-const int MAX_RIWAYAT = MAX_SLOT * 2; // Kapasitas maksimum riwayat
+const int MAX_SLOT = 1; 
+const int MAX_QUEUE = 1; 
+const int MAX_RIWAYAT = MAX_SLOT * 2; 
 
-// Struktur data parkir
 string slotParkir[MAX_SLOT];
 string waktuParkir[MAX_SLOT];
 int jumlahSlotTerisi = 0;
 
-// Struktur data riwayat parkir
 string riwayatParkir[MAX_RIWAYAT];
 string waktuMasukRiwayat[MAX_RIWAYAT];
 string waktuKeluarRiwayat[MAX_RIWAYAT];
 int jumlahRiwayat = 0;
 
-// Struktur data antrean
 string waktuAntrean[MAX_SLOT];
 string antreanMobil[MAX_QUEUE];
 int frontAntrean = 0, rearAntrean = -1, jumlahAntrean = 0;
@@ -40,34 +39,50 @@ void garisHorizontal(int panjang) {
     cout << endl;
 }
 
+void simpanAntrean() {
+    ofstream file("antreanMobil.txt");
+    if (file.is_open()) {
+        for (int i = frontAntrean; i <= rearAntrean; i++) {
+            file << antreanMobil[i] << "," << waktuAntrean[i] << endl;
+        }
+        file.close();
+    }
+}
+
+void simpanSlotParkir() {
+    ofstream file("slotParkir.txt");
+    if (file.is_open()) {
+        for (int i = 0; i < MAX_SLOT; i++) {
+            file << slotParkir[i] << "," << waktuParkir[i] << endl;
+        }
+        file.close();
+    }
+}
+
 void keluarkanMobil() {
+    string platNomor;
     garisHorizontal(41);
     cout << "|           MENGELUARKAN MOBIL           |\n";
     garisHorizontal(41);
-    if (jumlahSlotTerisi > 0) {
-        string platNomor;
-        cout << "Masukkan plat nomor mobil yang akan dikeluarkan: ";
-        getline(cin, platNomor);
 
-        bool ditemukan = false;
-        for (int i = 0; i < jumlahSlotTerisi; i++) {
-            if (slotParkir[i] == platNomor) {
-                ditemukan = true;
+    cout << "Masukkan plat nomor mobil yang akan dikeluarkan: ";
+    getline(cin, platNomor);
 
-                // Tambahkan ke riwayat
-                riwayatParkir[jumlahRiwayat] = slotParkir[i];
-                waktuMasukRiwayat[jumlahRiwayat] = waktuParkir[i];
-                waktuKeluarRiwayat[jumlahRiwayat] = getWaktuSekarang();
-                jumlahRiwayat++;
+    bool ditemukan = false;
+    for (int i = 0; i < MAX_SLOT; i++) {
+        if (slotParkir[i] == platNomor) {
+            ditemukan = true;
 
-                // Geser slot parkir
-                for (int j = i; j < jumlahSlotTerisi - 1; j++) {
-                    slotParkir[j] = slotParkir[j + 1];
-                    waktuParkir[j] = waktuParkir[j + 1];
-                }
+            riwayatParkir[jumlahRiwayat] = slotParkir[i];
+            waktuMasukRiwayat[jumlahRiwayat] = waktuParkir[i];
+            waktuKeluarRiwayat[jumlahRiwayat] = getWaktuSekarang();
+            jumlahRiwayat++;
 
-                jumlahSlotTerisi--;
-                pendapatan += 5000;
+            slotParkir[i].clear();
+            waktuParkir[i].clear();
+
+            pendapatan += 5000;
+
 
                 cout << "\n\n";
                 cout << "++++++++++++++++++++++++++++++++++++++++++\n";
@@ -75,29 +90,28 @@ void keluarkanMobil() {
                 cout << "+ Date          : " << getWaktuSekarang() << "\n";
                 cout << "++++++++++++++++++++++++++++++++++++++++++\n\n";
 
-                // Jika ada antrean, tambahkan ke slot parkir
                 if (jumlahAntrean > 0) {
-                    slotParkir[jumlahSlotTerisi] = antreanMobil[frontAntrean];
-                    waktuParkir[jumlahSlotTerisi] = getWaktuSekarang();
-                    jumlahSlotTerisi++;
+                slotParkir[i] = antreanMobil[frontAntrean];
+                waktuParkir[i] = waktuAntrean[frontAntrean];
 
-                    for (int i = frontAntrean; i < rearAntrean; i++) {
-                    antreanMobil[i] = antreanMobil[i + 1];
-                    waktuAntrean[i] = waktuAntrean[i + 1];
-                    }
-
-                    frontAntrean++;
-                    jumlahAntrean--;
+                for (int j = frontAntrean; j < rearAntrean; j++) {
+                    antreanMobil[j] = antreanMobil[j + 1];
+                    waktuAntrean[j] = waktuAntrean[j + 1];
                 }
-                break;
-            }
-        }
+                rearAntrean--;
+                jumlahAntrean--;
 
-        if (!ditemukan) {
-            cout << "[" << getWaktuSekarang() << "] Mobil dengan plat " << platNomor << " tidak ditemukan di slot parkir.\n";
+                cout << "Mobil dengan plat " << slotParkir[i] << " dipindahkan dari antrean ke slot " << i + 1 << ".\n";
+                simpanAntrean();  
+                simpanSlotParkir(); 
+            }
+
+            break;
         }
-    } else {
-        cout << "[" << getWaktuSekarang() << "] Tidak ada mobil di slot parkir.\n";
+    }
+
+    if (!ditemukan) {
+        cout << "Mobil dengan plat " << platNomor << " tidak ditemukan di slot parkir.\n";
     }
 }
 
