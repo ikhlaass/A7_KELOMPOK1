@@ -3,8 +3,8 @@
 #include <ctime> 
 using namespace std;
 
-const int MAX_SLOT = 1; 
-const int MAX_QUEUE = 1;
+const int MAX_SLOT = 10; 
+const int MAX_QUEUE = 10;
 
 string slotParkir[MAX_SLOT];
 string waktuParkir[MAX_SLOT];
