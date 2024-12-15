@@ -3,9 +3,9 @@
 
 using namespace std;
 
-const int MAX_SLOT = 10; 
-const int MAX_QUEUE = 10; 
-const int MAX_RIWAYAT = MAX_SLOT * 2; 
+#define MAX_SLOT 10
+#define MAX_QUEUE 10
+#define MAX_RIWAYAT (MAX_SLOT * 2)
 
 string slotParkir[MAX_SLOT];
 string waktuParkir[MAX_SLOT];
@@ -16,7 +16,7 @@ string waktuMasukRiwayat[MAX_RIWAYAT];
 string waktuKeluarRiwayat[MAX_RIWAYAT];
 int jumlahRiwayat = 0;
 
-string waktuAntrean[MAX_SLOT];
+string waktuAntrean[MAX_QUEUE];
 string antreanMobil[MAX_QUEUE];
 int frontAntrean = 0, rearAntrean = -1, jumlahAntrean = 0;
 
@@ -49,11 +49,63 @@ void simpanAntrean() {
     }
 }
 
+void bacaAntrean() {
+    ifstream file("antreanMobil.txt");
+    if (file.is_open()) {
+        string platNomor, waktu;
+        while (getline(file, platNomor, ',') && getline(file, waktu)) {
+            antreanMobil[rearAntrean + 1] = platNomor;
+            waktuAntrean[rearAntrean + 1] = waktu;
+            rearAntrean++;
+            jumlahAntrean++;
+        }
+        file.close();
+    }
+}
+
 void simpanSlotParkir() {
     ofstream file("slotParkir.txt");
     if (file.is_open()) {
         for (int i = 0; i < MAX_SLOT; i++) {
             file << slotParkir[i] << "," << waktuParkir[i] << endl;
+        }
+        file.close();
+    }
+}
+
+void bacaSlotParkir() {
+    ifstream file("slotParkir.txt");
+    if (file.is_open()) {
+        string platNomor, waktu;
+        int i = 0;
+        while (getline(file, platNomor, ',') && getline(file, waktu)) {
+            slotParkir[i] = platNomor;
+            waktuParkir[i] = waktu;
+            i++;
+        }
+        file.close();
+    }
+}
+
+void simpanRiwayatParkir() {
+    ofstream file("riwayatParkir.txt");
+    if (file.is_open()) {
+        for (int i = 0; i < jumlahRiwayat; i++) {
+            file << riwayatParkir[i] << "," << waktuMasukRiwayat[i] << "," << waktuKeluarRiwayat[i] << endl;
+        }
+        file.close();
+    }
+}
+
+void bacaRiwayatParkir() {
+    ifstream file("riwayatParkir.txt");
+    if (file.is_open()) {
+        string platNomor, waktuMasuk, waktuKeluar;
+        while (getline(file, platNomor, ',') && getline(file, waktuMasuk, ',') && getline(file, waktuKeluar)) {
+            riwayatParkir[jumlahRiwayat] = platNomor;
+            waktuMasukRiwayat[jumlahRiwayat] = waktuMasuk;
+            waktuKeluarRiwayat[jumlahRiwayat] = waktuKeluar;
+            jumlahRiwayat++;
         }
         file.close();
     }
@@ -81,14 +133,16 @@ void keluarkanMobil() {
             slotParkir[i].clear();
             waktuParkir[i].clear();
 
-            pendapatan += 5000;
+            pendapatan += 5000; 
 
-
-                cout << "\n\n";
-                cout << "++++++++++++++++++++++++++++++++++++++++++\n";
-                cout << "+ Mobil Plat    : " << platNomor << "\n";                                                                  
-                cout << "+ Date          : " << getWaktuSekarang() << "\n";
-                cout << "++++++++++++++++++++++++++++++++++++++++++\n\n";
+            cout << "\n\n";
+            cout << "++++++++++++++++++++++++++++++++++++++++++\n";
+            cout << "\nData Mobil Yang Keluar .\n";
+            cout << "++++++++++++++++++++++++++++++++++++++++++\n";
+            cout << "+ Mobil Plat    : " << platNomor << "\n";                                                                  
+            cout << "+ Date          : " << getWaktuSekarang() << "\n";
+            cout << "++++++++++++++++++++++++++++++++++++++++++\n\n";
+            simpanRiwayatParkir();
 
                 if (jumlahAntrean > 0) {
                 slotParkir[i] = antreanMobil[frontAntrean];
@@ -101,7 +155,7 @@ void keluarkanMobil() {
                 rearAntrean--;
                 jumlahAntrean--;
 
-                cout << "Mobil dengan plat " << slotParkir[i] << " dipindahkan dari antrean ke slot " << i + 1 << ".\n";
+                cout << "Mobil dengan plat " << slotParkir[i] << " dipindahkan dari antrean ke slot.\n";
                 simpanAntrean();  
                 simpanSlotParkir(); 
             }

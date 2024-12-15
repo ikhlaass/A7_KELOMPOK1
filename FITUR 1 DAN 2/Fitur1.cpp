@@ -3,8 +3,8 @@
 #include <ctime> 
 using namespace std;
 
-const int MAX_SLOT = 10; 
-const int MAX_QUEUE = 10;
+#define MAX_SLOT 10
+#define MAX_QUEUE 10
 
 string slotParkir[MAX_SLOT];
 string waktuParkir[MAX_SLOT];
@@ -111,8 +111,14 @@ void masukkanMobil() {
         slotParkir[slot] = platNomor;
         waktuParkir[slot] = getWaktuSekarang();
 
-        cout << "\nMobil dengan plat " << platNomor << " berhasil diparkir di slot " << slot + 1 << ".\n";
-        simpanSlotParkir(); 
+        cout << "\n\n";
+        cout << "++++++++++++++++++++++++++++++++++++++++++\n";
+        cout << "+ Mobil Plat    : " << platNomor << "\n"; 
+        cout << "+ Slot          : " << slot + 1 << "\n";                                                                 
+        cout << "+ Harga         : " << "5.000" << "\n";                                                                 
+        cout << "+ Date          : " << getWaktuSekarang() << "\n";
+        cout << "++++++++++++++++++++++++++++++++++++++++++\n\n";
+
     } else {
         if (jumlahAntrean < MAX_QUEUE) {
             rearAntrean++;
@@ -122,9 +128,12 @@ void masukkanMobil() {
 
             cout << "\n\n";
             cout << "++++++++++++++++++++++++++++++++++++++++++\n";
+            cout << "\nParkir penuh. Mobil Masuk Ke Daftar Antrian.\n";
+            cout << "++++++++++++++++++++++++++++++++++++++++++\n";
             cout << "+ Mobil Plat    : " << platNomor << "\n";                                                                  
             cout << "+ Date          : " << waktuAntrean[rearAntrean] << "\n";
             cout << "++++++++++++++++++++++++++++++++++++++++++\n\n";
+
         } else {
             cout << "Parkir penuh dan antrean juga penuh. Tidak dapat menerima mobil lagi.\n";
         }
