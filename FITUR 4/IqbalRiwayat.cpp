@@ -34,24 +34,6 @@ void garisHorizontal(int panjang) {
     cout << endl;
 }
 
-// Fungsi untuk menyimpan data riwayat ke file
-void simpanKeFile() {
-    ofstream file("data_parkir.txt", ios::app); // Gunakan mode append
-    if (file.is_open()) {
-        for (int i = 0; i < jumlahRiwayat; i++) {
-            file << "\n++++++++++++++++++++++++++++++++++++++++++\n";
-            file << "+ Riwayat Ke : " << i + 1 << "\n";
-            file << "+ Plat       : " << riwayatParkir[i] << "\n";
-            file << "+ Masuk      : " << waktuMasukRiwayat[i] << "\n";
-            file << "+ Keluar     : " << waktuKeluarRiwayat[i] << "\n";
-            file << "++++++++++++++++++++++++++++++++++++++++++\n";
-        }
-        file.close();
-        cout << "Data berhasil disimpan ke file data_parkir.txt\n";
-    } else {
-        cout << "Gagal membuka file untuk menyimpan data.\n";
-    }
-}
 
 // Fungsi untuk melihat riwayat parkir
 void lihatRiwayatParkir() {
@@ -77,11 +59,6 @@ void lihatRiwayatParkir() {
 int main() {
 
     lihatRiwayatParkir(); // Lihat riwayat
-    simpanKeFile();       // Simpan ke file
-
-    // Alternatif untuk menggantikan `system("pause")`
-    cout << "Tekan Enter untuk keluar...";
-    cin.ignore();
 
     return 0;
 }
