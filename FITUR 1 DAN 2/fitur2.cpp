@@ -20,7 +20,7 @@ string waktuAntrean[MAX_QUEUE];
 string antreanMobil[MAX_QUEUE];
 int frontAntrean = 0, rearAntrean = -1, jumlahAntrean = 0;
 
-int pendapatan = 0;
+float pendapatan = 0;
 
 string getWaktuSekarang() {
     time_t now = time(0);
